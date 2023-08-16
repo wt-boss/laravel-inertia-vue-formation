@@ -2,26 +2,27 @@
     <div>
         <Link href="/">Index</Link>&nbsp;
         <Link href="/show">Show</Link>
-        <Link href="/login">login</Link>
-        {{ count }}
-    </div>{{ $page.props.user.name }}
-    <div class="name"></div>
-        <slot></slot>
+    </div>
 
+    <div class="name" v-if="page.props.user">
+        {{ $page.props.user.name }}
+        <Link href="/logout" method="delete" as="button">logout</Link>
+    </div>
+
+    <div v-else>
+        <Link href="/login">login</Link>
+        <Link href="/account/create">Register</Link>
+
+    </div>
+    <slot></slot>
 </template>
 
 <script setup>
-import { Link , usePage } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
 import { ref } from "vue";
 
-const page = usePage()
+const page = usePage();
 const count = ref(0);
-
-setInterval(()=>{
-    count.value++;
-},1000)
-
-
-</script>
+</script> 
 
 <style lang="scss" scoped></style>

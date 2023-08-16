@@ -1,10 +1,11 @@
 <script setup>
 import {Link} from '@inertiajs/vue3'
+import Pagination from '../../components/Pagination.vue';
 
 
 const props = defineProps({
     listings: {
-        type: Array,
+        type: Object,
         required: true,
     },
 });
@@ -13,14 +14,12 @@ const props = defineProps({
 
 
 <template>
-    <div v-for="listing in props.listings" :key="listing">
+    <div v-for="listing in props.listings.data" :key="listing.id">
+
         <Link :href="`/listings/${listing.id}`">{{`${listing.price} ${listing.code}`}} </Link>
-        
+            
     </div> 
-
-
-
-    hello word
+    <Pagination :links="listings.links"></Pagination>
 </template>
 
 

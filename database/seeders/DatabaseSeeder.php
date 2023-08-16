@@ -22,6 +22,6 @@ class DatabaseSeeder extends Seeder
           'email' => 'test@yvan.com',
           'password'=>'admin'
         ]);
-        Listing::factory(10)->create();
+        Listing::factory(50)->create();
     }
 }
