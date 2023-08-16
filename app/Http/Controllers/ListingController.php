@@ -6,6 +6,9 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Listing;
 use Illuminate\Http\Request;
+use Illuminate\Database\Query\Builder;
+
+
 
 
 class ListingController extends Controller
@@ -18,13 +21,35 @@ class ListingController extends Controller
      {
         $this->middleware('auth')->except(['show', 'index']);
      }
-    public function index(){
+    public function index(Request $request){
 
-       /*  dd(Listing::all()); */
+
+        $filter = $request->only(['priceFrom', 'priceTo','beds','baths','areaForm', 'areaTo']);
+        $query = Listing::orderByDesc('created_at')->when(
+            $filter['priceForm']??false, function(Builder $query , $value){
+                $query->where('price', '>=', $value);
+            }
+        )->when(
+            $filter['priceTo']??false,
+            fn ($query , $value)=>$query->where('price', '<=', $value)
+        )->when(
+            $filter['beds']??false,
+            fn ($query , $value)=>$query->where('beds', '=', $value)
+        )->when(
+            $filter['baths']??false,
+            fn ($query , $value)=>$query->where('baths', '=', $value)
+        )->when(
+            $filter['areaFrom']??false,
+            fn ($query , $value)=>$query->where('area', '>=', $value)
+        )->when(
+            $filter['areaTo']??false,
+            fn ($query , $value)=>$query->where('area', '<=', $value)
+        );  
         
+
         return inertia('Listing/Index',
           [
-                    'listings'=>Listing::orderByDesc('created_at')->paginate(10),
+                    'listings'=>$query->paginate(10)->withQueryString(),
                 ]);
           
        }
